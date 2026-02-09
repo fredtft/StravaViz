@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export const RunnerIcon = ({ className = "w-6 h-6" }) => (
@@ -14,12 +15,16 @@ export const BikeIcon = ({ className = "w-6 h-6" }) => (
 
 /**
  * Minimalist Sprinter Silhouette
- * Path inspired by the provided reference image for a dynamic power pose.
+ * Refined path inspired by the provided "power pose" reference.
  */
 export const RunIcon = ({ className = "w-6 h-6" }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <circle cx="17.5" cy="5.5" r="2.2" />
-    <path d="M19.1 11.2c-.4-.4-1-.5-1.5-.2l-2.8 1.5-3.3-3.3c-.3-.3-.7-.4-1.1-.4h-2.1L5.7 7.2C5.3 7 4.7 7 4.3 7.4s-.4 1 0 1.4l2.4 2.4-1.1 5.3c-.1.5.2 1 .7 1.1s1-.2 1.1-.7l1.2-5.8c.1-.4.4-.6.8-.6h1.2l3.4 3.4c.4.4.4 1 0 1.4l-3.3 3.3c-.4.4-.4 1 0 1.4s1 .4 1.4 0l3.8-3.8c.4-.4.4-1 0-1.4l-2.1-2.1 1.6-1.6 3.1 3.1c.4.4 1 .4 1.4 0s.4-1 0-1.4l-3.1-3.1 1.6-1.6 2.2 2.2c.4.4 1 .4 1.4 0s.4-1 0-1.4l-2.2-2.2 1.6-1.6c.4-.4.4-1 0-1.4l-2.8-2.8c-.2-.2-.4-.3-.7-.3h-3.1c-.6 0-1 .4-1 1s.4 1 1 1h2.5l1.6 1.6z" transform="scale(0.95) translate(0.6, 0.6) rotate(-5, 12, 12)" />
+    <circle cx="18.5" cy="4.5" r="2.2" />
+    <path d="M21 9.5c-.3 0-.6-.1-.8-.3l-3.2-3.2-3.5 3.5c-.3.3-.7.5-1.1.5h-2.1L5.5 5.5c-.4-.4-.4-1 0-1.4.4-.4 1-.4 1.4 0L10 7.2h2.2l3.8-3.8c.4-.4 1-.4 1.4 0l3.5 3.5c.4.4.4 1 0 1.4-.2.1-.5.2-.9.2z" />
+    <path d="M14.5 10.5l-3.5 3.5c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l3.5-3.5 1.5 1.5z" opacity="0.4" />
+    <path d="M18.5 10.2l-3.8 3.8c-.4.4-1 .4-1.4 0l-3.5-3.5-1.5 6.5c-.1.5.2 1 .7 1.1s1-.2 1.1-.7l1.2-5.5 2.5 2.5c.4.4 1 .4 1.4 0l3.8-3.8c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z" />
+    <path d="M11.5 17.5l-3.5 3.5c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l3.5-3.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4z" />
+    <path d="M16.5 15.5l-3.5 3.5c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l3.5-3.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4z" />
   </svg>
 );
 

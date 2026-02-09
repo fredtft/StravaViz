@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { StravaActivity } from '../types';
 import { formatAdaptiveDistance, formatAdaptiveElevation } from '../App';
 
@@ -7,7 +7,7 @@ interface ListViewProps {
   activities: StravaActivity[];
 }
 
-const ListView: React.FC<ListViewProps> = ({ activities }) => {
+const ListView: React.FC<ListViewProps> = memo(({ activities }) => {
   const formatTime = (seconds: number) => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -66,6 +66,6 @@ const ListView: React.FC<ListViewProps> = ({ activities }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ListView;

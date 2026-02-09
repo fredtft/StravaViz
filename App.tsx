@@ -10,10 +10,7 @@ import { dbService } from './services/dbService';
 import { RunIcon, ListIcon, MapIcon, StatsIcon, DownloadIcon } from './components/Icons';
 
 /**
- * ADAPTIVE FORMATTING: 
- * - < 1km: 2 digits (0.55)
- * - < 100km: 1 digit (10.5)
- * - > 100km: 0 digits (509)
+ * ADAPTIVE FORMATTING
  */
 export const formatAdaptiveDistance = (m: number) => {
   const km = m / 1000;
@@ -30,6 +27,8 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activities, setActivities] = useState<StravaActivity[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingStatus, setLoadingStatus] = useState("Initializing...");
   const [view, setView] = useState<ViewMode>(ViewMode.MAP);
   
   // Filters
@@ -49,18 +48,17 @@ const App: React.FC = () => {
 
   const handleOAuthCallback = async (code: string) => {
     setLoading(true);
+    setLoadingStatus("Exchanging authentication code...");
     try {
       const clientId = localStorage.getItem('strava_client_id') || '';
       const clientSecret = localStorage.getItem('strava_client_secret') || '';
       const data = await stravaService.exchangeToken(clientId, clientSecret, code);
       if (data.access_token) {
         await fetchActivities(data.access_token);
-        // Relative redirect for subdirectory hosting compatibility
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     } catch (err: any) {
       alert('Authentication failed');
-    } finally {
       setLoading(false);
     }
   };
@@ -68,7 +66,10 @@ const App: React.FC = () => {
   const fetchActivities = async (token: string) => {
     setLoading(true);
     try {
-      const data = await stravaService.fetchActivities(token);
+      const data = await stravaService.fetchActivities(token, (progress, status) => {
+        setLoadingProgress(progress);
+        setLoadingStatus(status);
+      });
       setActivities(data);
       setIsAuthenticated(true);
       dbService.archiveSession(data);
@@ -85,7 +86,6 @@ const App: React.FC = () => {
     dbService.archiveSession(data);
   };
 
-  // MULTI-SELECT SPORT LOGIC
   const toggleSport = (sport: string) => {
     if (sport === 'ALL') {
       setSelectedSports(['ALL']);
@@ -134,9 +134,35 @@ const App: React.FC = () => {
 
   if (!isAuthenticated) {
     if (loading) return (
-      <div className="h-screen flex flex-col items-center justify-center bg-white">
-        <div className="w-16 h-16 border-4 border-slate-100 border-t-[#FC4C02] rounded-full animate-spin mb-6"></div>
-        <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Processing Database...</p>
+      <div className="h-screen flex flex-col items-center justify-center bg-white p-12">
+        <div className="relative w-56 h-56 flex items-center justify-center">
+          <svg className="absolute w-full h-full -rotate-90">
+            <circle cx="112" cy="112" r="100" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
+            <circle
+              cx="112" cy="112" r="100" fill="transparent" stroke="#FC4C02" strokeWidth="12"
+              strokeDasharray={2 * Math.PI * 100}
+              strokeDashoffset={2 * Math.PI * 100 * (1 - loadingProgress / 100)}
+              strokeLinecap="round"
+              className="transition-all duration-700 ease-in-out"
+            />
+          </svg>
+          <div className="flex flex-col items-center justify-center z-10">
+            <div className="bg-[#FC4C02] p-5 rounded-[2.5rem] shadow-2xl shadow-orange-500/40 mb-3 transform hover:scale-105 transition">
+              <RunIcon className="w-16 h-16 text-white" />
+            </div>
+            <span className="text-3xl font-black text-slate-800 tabular-nums tracking-tighter">{loadingProgress}%</span>
+          </div>
+        </div>
+        <div className="mt-16 text-center max-w-sm w-full">
+          <p className="text-[11px] font-black text-[#FC4C02] uppercase tracking-[0.3em] mb-4">Database Synchronization</p>
+          <div className="bg-slate-50 border border-slate-100 px-6 py-4 rounded-3xl shadow-sm">
+            <p className="text-sm font-bold text-slate-600 animate-pulse">{loadingStatus}</p>
+          </div>
+          <div className="mt-10 w-full h-2 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+            <div className="h-full bg-gradient-to-r from-orange-400 to-[#FC4C02] transition-all duration-700 ease-in-out" style={{ width: `${loadingProgress}%` }} />
+          </div>
+          <p className="mt-4 text-[10px] text-slate-400 font-bold uppercase tracking-widest">Optimized for large datasets (4000+)</p>
+        </div>
       </div>
     );
     return <AuthScreen onToken={fetchActivities} onDataImport={handleImport} />;
@@ -144,11 +170,10 @@ const App: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col bg-slate-50 overflow-hidden font-inter text-slate-900">
-      {/* Universal Header */}
       <header className="bg-white border-b border-slate-200 px-8 h-20 flex items-center justify-between z-30 shrink-0 shadow-sm">
         <div className="flex items-center gap-10">
-          <div className="flex items-center gap-3">
-            <div className="bg-[#FC4C02] p-1.5 rounded-xl shadow-lg shadow-orange-500/20">
+          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.location.reload()}>
+            <div className="bg-[#FC4C02] p-1.5 rounded-xl shadow-lg shadow-orange-500/20 group-hover:rotate-12 transition">
               <RunIcon className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-black text-slate-800 tracking-tighter mr-6">Strava<span className="text-[#FC4C02]">Viz</span></h1>
@@ -171,19 +196,18 @@ const App: React.FC = () => {
           <div className="flex items-center gap-2 px-5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">Year</span>
             {years.map(y => (
-              <button key={y} onClick={() => setSelectedYear(y)} className={`px-3 py-1 text-[11px] font-black rounded-lg transition ${selectedYear === y ? 'bg-[#FC4C02] text-white' : 'text-slate-400 hover:bg-slate-200'}`}>
+              <button key={y} onClick={() => setSelectedYear(y)} className={`px-3 py-1 text-[11px] font-black rounded-lg transition ${selectedYear === y ? 'bg-[#FC4C02] text-white shadow-sm' : 'text-slate-400 hover:bg-slate-200'}`}>
                 {y}
               </button>
             ))}
           </div>
-          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="p-3 text-slate-300 hover:text-slate-900 transition" title="Logout">
+          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="p-3 text-slate-300 hover:text-[#FC4C02] transition" title="Logout">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           </button>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar - Permanent Sport Menu (Refined Compact Style) */}
         <aside className="w-64 bg-white border-r border-slate-200 p-5 flex flex-col gap-6 shrink-0 z-20">
           <div>
             <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Filter by Sport</h3>
@@ -219,13 +243,11 @@ const App: React.FC = () => {
             <button onClick={() => dbService.exportToJSON(activities)} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 text-slate-500 font-black text-[9px] uppercase tracking-widest rounded-xl border border-slate-200 hover:bg-slate-100 transition">
               <DownloadIcon className="w-3.5 h-3.5" /> Export JSON
             </button>
-            <p className="mt-3 text-[8px] text-slate-300 font-black text-center uppercase tracking-widest leading-tight">Alwaysdata Hosting<br/> Ready</p>
+            <p className="mt-3 text-[8px] text-slate-300 font-black text-center uppercase tracking-widest leading-tight">Optimized for Large DBs<br/> 4000+ Ready</p>
           </div>
         </aside>
 
-        {/* Main Dashboard Area */}
         <main className="flex-1 flex flex-col p-6 overflow-hidden gap-6">
-          {/* KPI Dashboard - High level summary */}
           <div className="grid grid-cols-4 gap-6 shrink-0">
             {[
               { label: 'Activities', val: statsKpi.count, unit: 'units' },
@@ -243,19 +265,21 @@ const App: React.FC = () => {
             ))}
           </div>
 
-          {/* Dynamic View Container */}
-          <div className="flex-1 min-h-0 bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden relative transition-content">
-            {view === ViewMode.MAP && <MapView activities={filteredActivities} />}
-            {view === ViewMode.LIST && (
+          {/* PERSISTENT MOUNTING CONTAINER: Improves fluidity significantly for thousands of activities */}
+          <div className="flex-1 min-h-0 bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden relative">
+            <div className={`absolute inset-0 transition-opacity duration-200 ${view === ViewMode.MAP ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+              <MapView activities={filteredActivities} isVisible={view === ViewMode.MAP} />
+            </div>
+            <div className={`absolute inset-0 transition-opacity duration-200 ${view === ViewMode.LIST ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
               <div className="h-full overflow-y-auto p-8 no-scrollbar">
                 <ListView activities={filteredActivities} />
               </div>
-            )}
-            {view === ViewMode.STATS && (
+            </div>
+            <div className={`absolute inset-0 transition-opacity duration-200 ${view === ViewMode.STATS ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
               <div className="h-full overflow-y-auto p-8 bg-slate-50/30 no-scrollbar">
                 <StatsView activities={filteredActivities} selectedSports={selectedSports} />
               </div>
-            )}
+            </div>
           </div>
         </main>
       </div>

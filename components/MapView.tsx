@@ -6,9 +6,10 @@ import { stravaService } from '../services/stravaService';
 
 interface MapViewProps {
   activities: StravaActivity[];
+  isVisible?: boolean;
 }
 
-const MapView: React.FC<MapViewProps> = ({ activities }) => {
+const MapView: React.FC<MapViewProps> = ({ activities, isVisible = true }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletInstance = useRef<L.Map | null>(null);
   const polylineGroup = useRef<L.FeatureGroup | null>(null);
@@ -39,6 +40,15 @@ const MapView: React.FC<MapViewProps> = ({ activities }) => {
     };
   }, []);
 
+  // Handle visibility changes for Leaflet size invalidation
+  useEffect(() => {
+    if (isVisible && leafletInstance.current) {
+      setTimeout(() => {
+        leafletInstance.current?.invalidateSize();
+      }, 250); // Slight delay for the fade transition in App.tsx
+    }
+  }, [isVisible]);
+
   useEffect(() => {
     if (!leafletInstance.current || !polylineGroup.current) return;
 
@@ -54,8 +64,7 @@ const MapView: React.FC<MapViewProps> = ({ activities }) => {
       'AlpineSki': '#6366f1',
     };
 
-    // Optimization: avoid binding popups if there are too many items to keep interaction fluid
-    const shouldBindPopup = activities.length < 1000;
+    const shouldBindPopup = activities.length < 500;
 
     activities.forEach(activity => {
       if (activity.map?.summary_polyline) {
@@ -63,8 +72,8 @@ const MapView: React.FC<MapViewProps> = ({ activities }) => {
         if (points.length > 0) {
           const poly = L.polyline(points, {
             color: sportColors[activity.type] || '#6366f1',
-            weight: activities.length > 1000 ? 1.5 : 2.5, // Thinner lines for density
-            opacity: 0.6,
+            weight: activities.length > 1000 ? 1.2 : 2.5,
+            opacity: 0.5,
             lineJoin: 'round'
           }).addTo(polylineGroup.current!);
 
@@ -91,10 +100,10 @@ const MapView: React.FC<MapViewProps> = ({ activities }) => {
       <div className="absolute top-4 left-4 z-[1000] bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg border border-slate-200 pointer-events-none hidden md:block">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Legend</p>
         <div className="space-y-1.5">
-          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#FC4C02]"></div> <span className="text-xs font-medium">Cycling</span></div>
-          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#3b82f6]"></div> <span className="text-xs font-medium">Running</span></div>
-          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#10b981]"></div> <span className="text-xs font-medium">Hiking</span></div>
-          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#f59e0b]"></div> <span className="text-xs font-medium">Walking</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#FC4C02]"></div> <span className="text-xs font-medium text-slate-600">Cycling</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#3b82f6]"></div> <span className="text-xs font-medium text-slate-600">Running</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#10b981]"></div> <span className="text-xs font-medium text-slate-600">Hiking</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-0.5 bg-[#f59e0b]"></div> <span className="text-xs font-medium text-slate-600">Walking</span></div>
         </div>
       </div>
     </div>

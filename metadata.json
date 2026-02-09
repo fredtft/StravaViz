@@ -1,0 +1,7 @@
+{
+  "name": "StravaViz",
+  "description": "A powerful visualization dashboard for Strava activities, featuring interactive maps, detailed statistics, and year/sport filtering with session archiving.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

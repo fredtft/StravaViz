@@ -7,7 +7,7 @@ import ListView from './components/ListView';
 import StatsView from './components/StatsView';
 import { stravaService } from './services/stravaService';
 import { dbService } from './services/dbService';
-import { BikeIcon, ListIcon, MapIcon, StatsIcon, DownloadIcon } from './components/Icons';
+import { RunIcon, ListIcon, MapIcon, StatsIcon, DownloadIcon } from './components/Icons';
 
 /**
  * ADAPTIVE FORMATTING: 
@@ -149,7 +149,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-10">
           <div className="flex items-center gap-3">
             <div className="bg-[#FC4C02] p-1.5 rounded-xl shadow-lg shadow-orange-500/20">
-              <BikeIcon className="w-6 h-6 text-white" />
+              <RunIcon className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-black text-slate-800 tracking-tighter mr-6">Strava<span className="text-[#FC4C02]">Viz</span></h1>
           </div>

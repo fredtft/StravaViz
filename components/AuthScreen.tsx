@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { stravaService } from '../services/stravaService';
+import { RunIcon } from './Icons';
 
 interface AuthScreenProps {
   onToken: (token: string) => void;
@@ -41,7 +42,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onToken, onDataImport }) => {
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
       <div className="flex flex-col items-center mb-12">
         <div className="w-16 h-16 bg-[#FC4C02] rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/20 mb-6">
-          <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+          <RunIcon className="w-10 h-10 text-white" />
         </div>
         <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Strava<span className="text-[#FC4C02]">Viz</span></h1>
         <p className="text-slate-500 mt-2 font-medium">Activity Analytics & Visualizer</p>

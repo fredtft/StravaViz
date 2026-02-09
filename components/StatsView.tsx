@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
@@ -277,7 +276,7 @@ const StatsView: React.FC<StatsViewProps> = ({ activities, selectedSports }) => 
       {/* Distribution Comparison */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white p-12 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col items-center">
-          <h3 className="font-black text-slate-800 text-lg mb-12 w-full uppercase tracking-tighter">Activity Breakdown (>1%)</h3>
+          <h3 className="font-black text-slate-800 text-lg mb-12 w-full uppercase tracking-tighter">Activity Breakdown (&gt;1%)</h3>
           <div className="h-[360px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

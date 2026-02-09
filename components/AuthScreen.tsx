@@ -15,6 +15,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onToken, onDataImport }) => {
 
   const handleOAuth = () => {
     if (!clientId) return alert('Enter Client ID');
+    // Ensure the redirect URI includes the full path for subdirectory hosting
     const redirectUri = window.location.origin + window.location.pathname;
     localStorage.setItem('strava_client_id', clientId);
     localStorage.setItem('strava_client_secret', clientSecret);
@@ -70,7 +71,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onToken, onDataImport }) => {
             <div className="space-y-4">
               <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
                 <p className="text-xs text-blue-700 font-medium leading-relaxed">
-                  <strong>Requirement:</strong> Set callback domain on Strava API to: <code className="bg-white px-1 rounded border">{window.location.hostname}</code>
+                  <strong>Requirement:</strong> Set callback domain on Strava API to: <code className="bg-white px-1 rounded border">nmfs.alwaysdata.net</code>
                 </p>
               </div>
               <div>

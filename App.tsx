@@ -55,7 +55,7 @@ const App: React.FC = () => {
       const data = await stravaService.exchangeToken(clientId, clientSecret, code);
       if (data.access_token) {
         await fetchActivities(data.access_token);
-        // Correct relative redirect for Alwaysdata hosting
+        // Relative redirect for subdirectory hosting compatibility
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     } catch (err: any) {
@@ -183,16 +183,16 @@ const App: React.FC = () => {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar - Permanent Sport Menu */}
-        <aside className="w-72 bg-white border-r border-slate-200 p-8 flex flex-col gap-10 shrink-0 z-20">
+        {/* Left Sidebar - Permanent Sport Menu (Refined Compact Style) */}
+        <aside className="w-64 bg-white border-r border-slate-200 p-5 flex flex-col gap-6 shrink-0 z-20">
           <div>
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Filter by Sport</h3>
-            <div className="space-y-2 overflow-y-auto no-scrollbar max-h-[60vh]">
+            <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Filter by Sport</h3>
+            <div className="space-y-1 overflow-y-auto no-scrollbar max-h-[70vh]">
               <button 
                 onClick={() => toggleSport('ALL')}
-                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition font-black text-xs border ${selectedSports.includes('ALL') ? 'bg-slate-900 text-white border-slate-900 shadow-lg' : 'bg-white text-slate-500 border-slate-100 hover:border-slate-300'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-black text-[11px] border ${selectedSports.includes('ALL') ? 'bg-slate-900 text-white border-slate-900 shadow-md' : 'bg-white text-slate-500 border-slate-100 hover:border-slate-300'}`}
               >
-                <div className={`w-2 h-2 rounded-full ${selectedSports.includes('ALL') ? 'bg-orange-500 animate-pulse' : 'bg-slate-200'}`}></div>
+                <div className={`w-1.5 h-1.5 rounded-full ${selectedSports.includes('ALL') ? 'bg-orange-500 animate-pulse' : 'bg-slate-200'}`}></div>
                 ALL SPORTS
               </button>
               
@@ -202,57 +202,57 @@ const App: React.FC = () => {
                   <button 
                     key={sport} 
                     onClick={() => toggleSport(sport)}
-                    className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition font-bold text-xs border group ${isActive ? 'bg-[#FC4C02] text-white border-[#FC4C02] shadow-lg shadow-orange-500/20' : 'bg-white text-slate-600 border-slate-100 hover:border-slate-300'}`}
+                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition font-bold text-[11px] border group ${isActive ? 'bg-[#FC4C02] text-white border-[#FC4C02] shadow-md shadow-orange-500/10' : 'bg-white text-slate-600 border-slate-100 hover:border-slate-300'}`}
                   >
-                    <span className="flex items-center gap-3">
-                      <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-slate-200 group-hover:bg-orange-400'}`}></div>
+                    <span className="flex items-center gap-2.5">
+                      <div className={`w-1 h-1 rounded-full ${isActive ? 'bg-white' : 'bg-slate-200 group-hover:bg-orange-400'}`}></div>
                       {sport}
                     </span>
-                    {isActive && <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                    {isActive && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="mt-auto pt-6 border-t border-slate-100">
-            <button onClick={() => dbService.exportToJSON(activities)} className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-slate-200 hover:bg-slate-100 transition">
-              <DownloadIcon className="w-4 h-4" /> Export JSON
+          <div className="mt-auto pt-4 border-t border-slate-100">
+            <button onClick={() => dbService.exportToJSON(activities)} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 text-slate-500 font-black text-[9px] uppercase tracking-widest rounded-xl border border-slate-200 hover:bg-slate-100 transition">
+              <DownloadIcon className="w-3.5 h-3.5" /> Export JSON
             </button>
-            <p className="mt-4 text-[9px] text-slate-300 font-black text-center uppercase tracking-widest">Alwaysdata Hosting Ready</p>
+            <p className="mt-3 text-[8px] text-slate-300 font-black text-center uppercase tracking-widest leading-tight">Alwaysdata Hosting<br/> Ready</p>
           </div>
         </aside>
 
         {/* Main Dashboard Area */}
-        <main className="flex-1 flex flex-col p-10 overflow-hidden gap-10">
+        <main className="flex-1 flex flex-col p-6 overflow-hidden gap-6">
           {/* KPI Dashboard - High level summary */}
-          <div className="grid grid-cols-4 gap-8 shrink-0">
+          <div className="grid grid-cols-4 gap-6 shrink-0">
             {[
               { label: 'Activities', val: statsKpi.count, unit: 'units' },
               { label: 'Distance', val: statsKpi.distance, unit: 'km' },
               { label: 'Duration', val: statsKpi.time, unit: 'hrs' },
               { label: 'Elevation', val: statsKpi.elevation, unit: 'm' },
             ].map(kpi => (
-              <div key={kpi.label} className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col gap-2 transition hover:shadow-md cursor-default">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{kpi.label}</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-slate-800 tabular-nums tracking-tighter">{kpi.val}</span>
-                  <span className="text-[11px] font-black text-slate-300 uppercase">{kpi.unit}</span>
+              <div key={kpi.label} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-1.5 transition hover:shadow-md cursor-default">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{kpi.label}</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-3xl font-black text-slate-800 tabular-nums tracking-tighter">{kpi.val}</span>
+                  <span className="text-[10px] font-black text-slate-300 uppercase">{kpi.unit}</span>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Dynamic View Container */}
-          <div className="flex-1 min-h-0 bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden relative transition-content">
+          <div className="flex-1 min-h-0 bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden relative transition-content">
             {view === ViewMode.MAP && <MapView activities={filteredActivities} />}
             {view === ViewMode.LIST && (
-              <div className="h-full overflow-y-auto p-10 no-scrollbar">
+              <div className="h-full overflow-y-auto p-8 no-scrollbar">
                 <ListView activities={filteredActivities} />
               </div>
             )}
             {view === ViewMode.STATS && (
-              <div className="h-full overflow-y-auto p-12 bg-slate-50/30 no-scrollbar">
+              <div className="h-full overflow-y-auto p-8 bg-slate-50/30 no-scrollbar">
                 <StatsView activities={filteredActivities} selectedSports={selectedSports} />
               </div>
             )}
